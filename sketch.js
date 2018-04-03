@@ -1,11 +1,11 @@
 var scl = 20;
 
-var rows = 50;
-var cols = 50;
+var rows = 10;
+var cols = 10;
 
 var game = [];
 
-var bombs = 1500;
+var bombs = 100;
 
 function setup() {
   var height = scl*cols;
@@ -40,7 +40,6 @@ function randomSquare() {
   var tries = 0;
   if(game[bomb.x][bomb.y] == -1){
     randomSquare();
-    console.log("hi");
     tries += 1;
     if(tries >= cols*rows){
       alert("too many bombs!");
