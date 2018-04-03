@@ -1,99 +1,208 @@
-var scl = 20;
+var scl = 50;
 
 var rows = 10;
 var cols = 10;
 
 var game = [];
 
-var bombs = 100;
+var bombs = 20;
+
+document.getElementById("bombs").innerHTML = bombs;
 
 function setup() {
   var height = scl*cols;
   var width = scl*rows;
-  createCanvas(width, height);
+  createCanvas(width+1, height+1);
   background(51);
   createMap();
   pickLocations();
   addNumbers();
 }
 
+function draw() {
+  background(51);
+  drawRects();
+  addNumbers();
+  stroke(100);
+}
+
 function createMap() {
   for(var i = 0; i < rows; i++){
     game[i] = [];
     for(var j = 0; j < cols; j++){
-      game[i][j] = 0;
+      game[i][j] = {val: 0, shown: false};
     }
   }
 }
 
+function drawRects() {
+  stroke(100);
+  for(var i = 0; i < rows; i++){
+    for(var j = 0; j < cols; j++){
+      if(game[i][j].shown === "flag"){
+        fill(255,50,150);
+        rect(i*scl,j*scl,scl,scl);
+      }
+      else if(game[i][j].shown != true){
+        fill(255);
+        rect(i*scl,j*scl,scl,scl);
+      }
+      if(game[i][j].shown == true && game[i][j].val == -1){
+        fill(155, 0, 50);
+        rect(i*scl,j*scl,scl,scl);
+      }
+    }
+    line(i*scl,0,i*scl,cols*scl);
+    line(0,i*scl,rows*scl,i*scl);
+  }
+}
+
 function pickLocations() {
-  fill(255, 0, 100);
   for(var i = 0; i < bombs; i++){
     bomb = randomSquare();
     bomb.mult(scl);
-    rect(bomb.x, bomb.y, scl, scl);
   }
 }
 
 function randomSquare() {
   let bomb = createVector(floor(random(cols)), floor(random(rows)));
   var tries = 0;
-  if(game[bomb.x][bomb.y] == -1){
-    randomSquare();
+  if(game[bomb.x][bomb.y].val == -1){
     tries += 1;
     if(tries >= cols*rows){
       alert("too many bombs!");
       return;
     }
+    return randomSquare();    
   }
-  game[bomb.x][bomb.y] = -1;
+  game[bomb.x][bomb.y].val = -1;
   return bomb;
 }
 
 function addNumbers() {
-  fill(255);
-  //textAlign(RIGHT, CENTER);
+  textSize(24)
+  textAlign(CENTER, CENTER);
   for(var i = 0; i < rows; i++){
     for(var j = 0; j < cols; j++){
-      game[i][j] = checkNeighbourTiles(i,j);
-      text(game[i][j],i*scl,scl+j*scl);
+      // Colour based on number
+      if(game[i][j].val == 1){
+        fill(150, 150, 255);
+      }
+      else if(game[i][j].val == 2){
+        fill(150, 255, 150);
+      }
+      else if(game[i][j].val == 3){
+        fill(255, 150, 150);
+      }
+      else{
+        fill(255, 255, 255);
+      }
+      game[i][j].val = checkNeighbourTiles(i,j);
+      if(game[i][j].shown == true){
+        text(game[i][j].val,scl/2+i*scl,scl/2+j*scl);
+      }
     }
   }
 }
 
 function checkNeighbourTiles(aX, aY) {
-  if(game[aX][aY] === -1){
+  if(game[aX][aY].val === -1){
     return -1;
   }
-  var coords = [
-    [(aX - 1), (aY - 1)],
-    [(aX - 1), (aY)],
-    [(aX - 1), (aY + 1)],
-    [(aX), (aY - 1)],
-    [(aX), (aY + 1)],
-    [(aX + 1), (aY - 1)],
-    [(aX + 1), (aY)],
-    [(aX + 1), (aY + 1)]
-  ];
-
   var num = 0;
 
+  var coords = [
+  [(aX - 1), (aY - 1)],
+  [(aX - 1), (aY)],
+  [(aX - 1), (aY + 1)],
+  [(aX), (aY - 1)],
+  [(aX), (aY + 1)],
+  [(aX + 1), (aY - 1)],
+  [(aX + 1), (aY)],
+  [(aX + 1), (aY + 1)]
+  ];
+
   for (i = 0; i < coords.length; i++) {
-    var x = coords[i][0]
-    var y = coords[i][1]
+    var x = coords[i][0];
+    var y = coords[i][1];
     if(x != -1 && y != -1 && x != rows && y != cols){
-      if(game[x][y] === -1){
+      if(game[x][y].val === -1){
         num += 1;
       }
     }
   }
-
   return num;
 }
 
-// function draw() {
-//   background(51);
+var s = [];
 
-//   fill(255, 0, 100);
-//   rect(bomb.x, bomb.y, scl, scl);
-// }
+function showNeighbourZeros(aX,aY) {
+  var coords = [
+  [(aX - 1), (aY - 1)],
+  [(aX - 1), (aY)],
+  [(aX - 1), (aY + 1)],
+  [(aX), (aY - 1)],
+  [(aX), (aY + 1)],
+  [(aX + 1), (aY - 1)],
+  [(aX + 1), (aY)],
+  [(aX + 1), (aY + 1)]
+  ]; 
+
+  for (i = 0; i < coords.length; i++) {
+    var x = coords[i][0];
+    var y = coords[i][1];
+    if(x != -1 && x != cols && y != -1 && y != rows){
+      if(game[x][y].val != -1 && game[x][y].shown == false){
+        show(x,y);
+        s.push({x,y});
+      }
+    }
+  }
+}
+
+function mouseClicked() {
+  var x = Math.floor(mouseX/scl);
+  var y = Math.floor(mouseY/scl)
+  var val = game[x][y].val;
+  switch(val){
+    case -1:
+      for(var i = 0; i < rows; i++){
+        for(var j = 0; j < cols; j++){
+          show(i,j);
+        }
+      }
+      break;
+    case 0:
+      show(x,y);
+      showNeighbourZeros(x,y);
+      for(var n = 0; n < s.length; n++){
+        showNeighbourZeros(s[n].x,s[n].y);
+      }
+      s = [];
+      break;
+    default:
+      show(x,y);
+    }
+  }
+
+function keyPressed() {
+  if(keyCode === 32){
+    var x = Math.floor(mouseX/scl);
+    var y = Math.floor(mouseY/scl);
+    if(game[x][y].shown == "flag"){
+      game[x][y].shown = false;
+    }
+    else{
+      game[x][y].shown = "flag";
+    }
+    
+  }
+}
+
+function show(x,y) {
+  game[x][y].shown = true;
+}
+
+function reset() {
+  location.reload();
+}
