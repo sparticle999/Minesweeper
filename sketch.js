@@ -216,3 +216,16 @@ window.addEventListener('keydown', function(e) {
     e.preventDefault();
   }
 });
+
+var secs = 0;
+var mins = 0;
+
+window.setInterval(function(){
+  secs += 1;
+  if(secs >= 60){
+    secs = 0;
+    mins += 1;
+  }
+  document.getElementById("secs").innerHTML = ("0" + secs).slice(-2);;
+  document.getElementById("mins").innerHTML = ("0" + mins).slice(-2);;
+}, 1000)
