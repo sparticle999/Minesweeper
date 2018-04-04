@@ -1,11 +1,11 @@
-var scl = 50;
+var scl = 20;
 
-var rows = 10;
-var cols = 10;
+var rows = 50;
+var cols = 50;
 
 var game = [];
 
-var bombs = 20;
+var bombs = rows*cols*0.156;
 
 document.getElementById("bombs").innerHTML = bombs;
 
@@ -154,7 +154,7 @@ function showNeighbourZeros(aX,aY) {
     if(x != -1 && x != cols && y != -1 && y != rows){
       if(game[x][y].val != -1 && game[x][y].shown == false){
         show(x,y);
-        s.push({x,y});
+        if(game[x][y].val == 0)s.push({x,y});
       }
     }
   }
@@ -206,3 +206,5 @@ function show(x,y) {
 function reset() {
   location.reload();
 }
+
+//                                                        IT SCANS THROUGH NUMBERS, NOT JUST ZEROS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
