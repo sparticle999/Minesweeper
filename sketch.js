@@ -8,6 +8,9 @@ var game = [];
 var bombs = rows*cols*0.156;
 var flags = 0;
 
+var gameover = false;
+var stoploop = false;
+
 document.getElementById("bombs").innerHTML = bombs;
 
 function setup() {
@@ -21,6 +24,9 @@ function setup() {
 }
 
 function draw() {
+  if(stoploop == true){
+    return;
+  }
   background(51);
   drawRects();
   addNumbers();
@@ -55,6 +61,9 @@ function drawRects() {
     }
     line(i*scl,0,i*scl,cols*scl);
     line(0,i*scl,rows*scl,i*scl);
+  }
+  if(gameover == true){
+    stoploop = true;
   }
 }
 
@@ -172,6 +181,7 @@ function mouseClicked() {
           if(game[i][j].val == -1)show(i,j);
         }
       }
+      gameover = true;
       break;
     case 0:
       show(x,y);
@@ -190,6 +200,7 @@ function keyPressed() {
   if(keyCode === 32){
     var x = Math.floor(mouseX/scl);
     var y = Math.floor(mouseY/scl);
+    if(mouseX > cols*scl || mouseY > rows*scl){return;}
     if(game[x][y].shown == "flag"){
       game[x][y].shown = false;
       flags -= 1;
@@ -221,6 +232,9 @@ var secs = 0;
 var mins = 0;
 
 window.setInterval(function(){
+  if(stoploop == true){
+    return;
+  }
   secs += 1;
   if(secs >= 60){
     secs = 0;
