@@ -171,11 +171,12 @@ function showNeighbourZeros(aX,aY) {
 }
 
 function mouseClicked() {
-  var x = Math.floor(mouseX/scl);
-  var y = Math.floor(mouseY/scl)
-  var val = game[x][y].val;
-  switch(val){
-    case -1:
+  if(mouseButton === LEFT){
+    var x = Math.floor(mouseX/scl);
+    var y = Math.floor(mouseY/scl)
+    var val = game[x][y].val;
+    switch(val){
+      case -1:
       for(var i = 0; i < rows; i++){
         for(var j = 0; j < cols; j++){
           if(game[i][j].val == -1)show(i,j);
@@ -183,7 +184,7 @@ function mouseClicked() {
       }
       gameover = true;
       break;
-    case 0:
+      case 0:
       show(x,y);
       showNeighbourZeros(x,y);
       for(var n = 0; n < s.length; n++){
@@ -191,13 +192,11 @@ function mouseClicked() {
       }
       s = [];
       break;
-    default:
+      default:
       show(x,y);
     }
   }
-
-function keyPressed() {
-  if(keyCode === 32){
+  if(mouseButton === RIGHT){
     var x = Math.floor(mouseX/scl);
     var y = Math.floor(mouseY/scl);
     if(mouseX > cols*scl || mouseY > rows*scl){return;}
@@ -209,7 +208,6 @@ function keyPressed() {
       game[x][y].shown = "flag";
       flags += 1;
     }
-    
   }
 }
 
