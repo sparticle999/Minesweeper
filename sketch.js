@@ -168,7 +168,7 @@ function mouseClicked() {
     case -1:
       for(var i = 0; i < rows; i++){
         for(var j = 0; j < cols; j++){
-          show(i,j);
+          if(game[i][j].val == -1)show(i,j);
         }
       }
       break;
