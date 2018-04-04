@@ -1,11 +1,16 @@
 var scl = 20;
 
-var rows = 50;
-var cols = 50;
+
+
+var rows = prompt("Size:", 50);
+if(rows == null){
+  rows = 10;
+}
+var cols = rows;
 
 var game = [];
 
-var bombs = rows*cols*0.156;
+var bombs = Math.ceil(rows*cols*0.156);
 var flags = 0;
 
 var gameover = false;
