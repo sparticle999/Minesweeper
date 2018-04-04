@@ -36,6 +36,7 @@ function draw() {
   drawRects();
   addNumbers();
   document.getElementById("flags").innerHTML = flags;
+  checkWin();
 }
 
 function createMap() {
@@ -201,7 +202,10 @@ function mouseClicked() {
       show(x,y);
     }
   }
-  if(mouseButton === RIGHT){
+}
+
+document.getElementById("body").addEventListener('contextmenu', function(ev) {
+    ev.preventDefault();
     var x = Math.floor(mouseX/scl);
     var y = Math.floor(mouseY/scl);
     if(mouseX > cols*scl || mouseY > rows*scl){return;}
@@ -213,8 +217,8 @@ function mouseClicked() {
       game[x][y].shown = "flag";
       flags += 1;
     }
-  }
-}
+    return false;
+}, false);
 
 function show(x,y) {
   game[x][y].shown = true;
@@ -222,6 +226,21 @@ function show(x,y) {
 
 function reset() {
   location.reload();
+}
+
+function checkWin() {
+  for(var i = 0; i < rows; i++){
+    for(var j = 0; j < cols; j++){
+      if(game[i][j].val == -1 && game[i][j].shown != "flag"){
+        return;
+      }
+    }
+  }
+  if(gameover == true){
+    return;
+  }
+  gameover = true;
+  alert("Congrats!");
 }
 
 // Stops space from scrolling down
