@@ -6,6 +6,7 @@ var cols = 50;
 var game = [];
 
 var bombs = rows*cols*0.156;
+var flags = 0;
 
 document.getElementById("bombs").innerHTML = bombs;
 
@@ -23,7 +24,7 @@ function draw() {
   background(51);
   drawRects();
   addNumbers();
-  stroke(100);
+  document.getElementById("flags").innerHTML = flags;
 }
 
 function createMap() {
@@ -191,9 +192,11 @@ function keyPressed() {
     var y = Math.floor(mouseY/scl);
     if(game[x][y].shown == "flag"){
       game[x][y].shown = false;
+      flags -= 1;
     }
     else{
       game[x][y].shown = "flag";
+      flags += 1;
     }
     
   }
@@ -207,4 +210,9 @@ function reset() {
   location.reload();
 }
 
-//                                                        IT SCANS THROUGH NUMBERS, NOT JUST ZEROS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// Stops space from scrolling down
+window.addEventListener('keydown', function(e) {
+  if(e.keyCode == 32 && e.target == document.body) {
+    e.preventDefault();
+  }
+});
